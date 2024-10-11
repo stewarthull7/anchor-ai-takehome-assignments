@@ -1,20 +1,23 @@
+import { useState } from "react";
 import { ItemData } from "../api/fetch-list";
 
-
 type ItemProps = {
-    item: ItemData;
-    isSelected: boolean;
-    onClick: () => void;
-    };
+  item: ItemData;
+  onSelect: (isSelected: boolean) => void;
+};
 
-function Item({ item, isSelected, onClick }: ItemProps) {
+function Item({ item, onSelect }: ItemProps) {
+  const [isSelected, setIsSelected] = useState(false);
 
   return (
     <li
       style={{ backgroundColor: isSelected ? 'yellow' : 'white', cursor: 'pointer'}}
-      onClick={onClick}
+      onClick={() => {
+        setIsSelected(!isSelected);
+        onSelect(!isSelected);
+      }}
     >
-        ID {item.id} - {item.name}
+      ID {item.id} - {item.name}
     </li>
   );
 }
