@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import  { useState, useEffect, useCallback } from 'react';
 import ItemList from './components/ItemList';
 import SearchBar from './components/SearchBar';
 import { fetchList, ItemData } from './api/fetch-list';
@@ -15,10 +15,19 @@ function App() {
     setItems(data);
   }
 
+  const handleSelectItem = (id: number) => {
+    setSelectedItemIds((prevSelectedItemIds) => {
+      const newSelectedItemIds = prevSelectedItemIds.includes(id)
+        ? prevSelectedItemIds.filter((itemId) => itemId !== id)
+        : [...prevSelectedItemIds, id];
+      setLastSelectedItemId(newSelectedItemIds.length ? newSelectedItemIds[newSelectedItemIds.length - 1] : null);
+      return newSelectedItemIds;
+    });
+  };
+
   useEffect(() => {
     fetchData();
   }, [query]);
-
 
   useEffect(() => {
     setTotalSelectedCount(selectedItemIds.length);
@@ -38,14 +47,7 @@ function App() {
       <ItemList
         items={items}
         selectedItemIds={selectedItemIds}
-        onSelectItem={(id: number) => {
-          if (selectedItemIds.includes(id)) {
-            setSelectedItemIds(selectedItemIds.filter((itemId) => itemId !== id));
-          } else {
-          setSelectedItemIds((ids) => [...ids, id]);
-          setLastSelectedItemId(selectedItemIds.length ? selectedItemIds[selectedItemIds.length - 1] : null);
-          }
-        }}
+        onSelectItem={handleSelectItem}
       />
     </div>
   );
